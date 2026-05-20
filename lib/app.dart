@@ -5,7 +5,6 @@ import 'package:flutter_supabase_auth/config/theme/app_theme.dart';
 import 'package:flutter_supabase_auth/modules/auth/binding/auth_binding.dart';
 import 'package:flutter_supabase_auth/modules/auth/controller/auth_controller.dart';
 import 'package:get/get.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 class App extends StatelessWidget {
   const App({super.key});

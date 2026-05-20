@@ -287,7 +287,9 @@ class AuthController extends GetxController {
     );
     if (result != true) return;
     try {
+      isLoading.value = true;
       await supabase.auth.signOut();
+      await Future.delayed(Duration(seconds: 1));
       Get.snackbar(
         'Logout',
         'You have been logged out successfully.',
@@ -309,7 +311,7 @@ class AuthController extends GetxController {
     }
   }
 
-  //! Logged In Function
+  //! Check if User is Logged In Function
   bool get isLoggedIn {
     return supabase.auth.currentUser != null;
   }

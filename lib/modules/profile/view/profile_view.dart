@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_supabase_auth/config/theme/app_theme.dart';
 import 'package:flutter_supabase_auth/modules/auth/controller/auth_controller.dart';
 import 'package:get/get.dart';
 import '../controller/profile_controller.dart';
@@ -18,12 +19,23 @@ class ProfileView extends GetView<ProfileController> {
     return AppBar(
       title: const Text("Profile View"),
       actions: [
-        IconButton(
-          onPressed: () {
-            authController.signOut();
-          },
-          icon: const Icon(Icons.logout),
-        ),
+        Obx(() {
+          return IconButton(
+            onPressed: authController.isLoading.value
+                ? null
+                : () => authController.signOut(),
+            icon: authController.isLoading.value
+                ? SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: const CircularProgressIndicator(
+                      strokeWidth: 3,
+                      color: AppTheme.primary,
+                    ),
+                  )
+                : const Icon(Icons.logout),
+          );
+        }),
       ],
     );
   }
