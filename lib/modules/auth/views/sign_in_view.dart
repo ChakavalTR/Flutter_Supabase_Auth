@@ -47,11 +47,11 @@ class SignInView extends GetView<AuthController> {
                       child: Column(
                         children: [
                           CircleAvatar(
-                            radius: 45,
-                            backgroundColor: AppTheme.primary,
+                            radius: 50,
+                            backgroundColor: AppTheme.primary.withOpacity(0.8),
                             child: Icon(
                               Icons.person,
-                              size: 70,
+                              size: 75,
                               color: AppTheme.lightBg,
                             ),
                           ),
@@ -96,6 +96,8 @@ class SignInView extends GetView<AuthController> {
                         TextFieldGlassWidget(
                           child: TextFormField(
                             controller: controller.emailController,
+                            cursorColor: AppTheme.primary,
+                            cursorWidth: 2,
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                               filled: true,
@@ -157,6 +159,8 @@ class SignInView extends GetView<AuthController> {
                           () => TextFieldGlassWidget(
                             child: TextFormField(
                               controller: controller.passwordController,
+                              cursorColor: AppTheme.primary,
+                              cursorWidth: 2,
                               style: TextStyle(color: Colors.white),
                               obscureText: !controller.isPasswordVisible.value,
                               onChanged: controller.togglePasswordFilled,

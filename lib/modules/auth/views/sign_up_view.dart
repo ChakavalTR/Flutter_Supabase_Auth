@@ -84,6 +84,8 @@ class SignUpView extends GetView<AuthController> {
                         TextFieldGlassWidget(
                           child: TextFormField(
                             controller: controller.fullNameController,
+                            cursorColor: AppTheme.primary,
+                            cursorWidth: 2,
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                               filled: true,
@@ -124,6 +126,8 @@ class SignUpView extends GetView<AuthController> {
                         TextFieldGlassWidget(
                           child: TextFormField(
                             controller: controller.emailController,
+                            cursorColor: AppTheme.primary,
+                            cursorWidth: 2,
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                               filled: true,
@@ -167,6 +171,8 @@ class SignUpView extends GetView<AuthController> {
                           () => TextFieldGlassWidget(
                             child: TextFormField(
                               controller: controller.passwordController,
+                              cursorColor: AppTheme.primary,
+                              cursorWidth: 2,
                               style: TextStyle(color: Colors.white),
                               obscureText: !controller.isPasswordVisible.value,
                               onChanged: controller.checkPassword,
@@ -253,6 +259,8 @@ class SignUpView extends GetView<AuthController> {
                           () => TextFieldGlassWidget(
                             child: TextFormField(
                               controller: controller.confirmPasswordController,
+                              cursorColor: AppTheme.primary,
+                              cursorWidth: 2,
                               style: TextStyle(color: Colors.white),
                               obscureText: !controller.isPasswordVisible.value,
                               onChanged: controller.togglePasswordFilled,
