@@ -11,8 +11,12 @@ class ProfileController extends GetxController {
   //* Variables Sections *
   final supabase = SupabaseService.client;
   var isLoading = false.obs;
+  var isAvatarLoading = false.obs;
+  var isUpdatingLoading = false.obs;
+
   final Rxn<ProfileModel> profile = Rxn<ProfileModel>();
   final fullNameController = TextEditingController();
+  final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final roleController = TextEditingController();
   final addressController = TextEditingController();
@@ -28,6 +32,7 @@ class ProfileController extends GetxController {
   @override
   void onClose() {
     fullNameController.dispose();
+    emailController.dispose();
     phoneController.dispose();
     roleController.dispose();
     addressController.dispose();
@@ -48,7 +53,20 @@ class ProfileController extends GetxController {
           .from('profiles')
           .select()
           .eq('id', user.id)
-          .single();
+          .maybeSingle();
+      if (data == null) {
+        await supabase.from('profiles').insert({
+          'id': user.id,
+          'email': user.email ?? '',
+          'full_name': user.userMetadata?['full_name'] ?? '',
+          'phone': '',
+          'role': '',
+          'address': '',
+          'avatar_url': '',
+        });
+        await getProfile();
+        return;
+      }
       profile.value = ProfileModel.fromMap(data);
     } catch (e) {
       Get.snackbar(
@@ -67,6 +85,7 @@ class ProfileController extends GetxController {
   void setEditFormData() {
     final data = profile.value;
     fullNameController.text = data?.fullName ?? '';
+    emailController.text = data?.email ?? '';
     phoneController.text = data?.phone ?? '';
     roleController.text = data?.role ?? '';
     addressController.text = data?.address ?? '';
@@ -75,7 +94,7 @@ class ProfileController extends GetxController {
   //! Update Profile
   Future<void> updateProfile() async {
     try {
-      isLoading.value = true;
+      isUpdatingLoading.value = true;
       final user = supabase.auth.currentUser;
       if (user == null || user.id.isEmpty) return;
       await supabase
@@ -106,7 +125,7 @@ class ProfileController extends GetxController {
         colorText: Colors.white,
       );
     } finally {
-      isLoading.value = false;
+      isUpdatingLoading.value = false;
     }
   }
 
@@ -121,13 +140,19 @@ class ProfileController extends GetxController {
         imageQuality: 70,
       );
       if (pickedImage == null) return;
-      isLoading.value = true;
-      final filePath = '${user.id}/avatar.jpg';
+      isAvatarLoading.value = true;
+      final filePath = 'avatar_${user.id}.jpg';
       final file = File(pickedImage.path);
+      await supabase.storage.from('avatars').remove([filePath]);
       await supabase.storage
           .from('avatars')
-          .upload(filePath, file, fileOptions: FileOptions(upsert: true));
-      final imageUrl = supabase.storage.from('avatars').getPublicUrl(filePath);
+          .upload(
+            filePath,
+            file,
+            fileOptions: FileOptions(upsert: true, cacheControl: '0'),
+          );
+      final imageUrl =
+          '${supabase.storage.from('avatars').getPublicUrl(filePath)}?v=${DateTime.now().millisecondsSinceEpoch}';
       await supabase
           .from('profiles')
           .update({
@@ -152,7 +177,7 @@ class ProfileController extends GetxController {
         colorText: Colors.white,
       );
     } finally {
-      isLoading.value = false;
+      isAvatarLoading.value = false;
     }
   }
 }

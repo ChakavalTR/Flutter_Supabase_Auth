@@ -96,13 +96,12 @@ class AuthController extends GetxController {
       );
       final user = response.user;
       if (user != null) {
-        await supabase.from("profiles").insert({
+        await supabase.from("profiles").upsert({
           'id': user.id,
           'email': email,
           'full_name': fullName,
-          'username': '',
           'phone': '',
-          'role': 'Flutter Developer',
+          'role': '',
           'address': '',
           'avatar_url': '',
         });
@@ -120,7 +119,7 @@ class AuthController extends GetxController {
         );
       });
       clearForm();
-      Get.back();
+      RouteView.signIn.go(clearAll: true);
     } on AuthApiException catch (e) {
       if (Get.isDialogOpen ?? false) {
         Get.back();
@@ -156,7 +155,7 @@ class AuthController extends GetxController {
       }
       Get.snackbar(
         "Sign Up Failed",
-        "Something went wrong. Please try again.",
+        'Something went wrong. Please try again.',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.redAccent,
         colorText: Colors.white,
