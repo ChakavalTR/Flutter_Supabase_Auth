@@ -185,6 +185,16 @@ class EditProfileView extends GetView<ProfileController> {
                         ? null
                         : () {
                             if (_formKey.currentState?.validate() ?? false) {
+                              if (!controller.isProfileDataChanged()) {
+                                Get.snackbar(
+                                  'No Changes',
+                                  'Please make changes to update your profile.',
+                                  backgroundColor: Colors.orangeAccent,
+                                  colorText: Colors.white,
+                                  snackPosition: SnackPosition.BOTTOM,
+                                );
+                                return;
+                              }
                               controller.updateProfile();
                             }
                           },

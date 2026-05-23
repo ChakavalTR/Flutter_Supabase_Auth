@@ -15,13 +15,17 @@ class ProfileController extends GetxController {
   var isLoading = false.obs;
   var isAvatarLoading = false.obs;
   var isUpdatingLoading = false.obs;
-
   final Rxn<ProfileModel> profile = Rxn<ProfileModel>();
   final fullNameController = TextEditingController();
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final roleController = TextEditingController();
   final addressController = TextEditingController();
+  String originalFullName = '';
+  String originalPhone = '';
+  String originalRole = '';
+  String originalAddress = '';
+
   //------------------------------------------//
 
   //! Lifecycle Section *
@@ -91,6 +95,10 @@ class ProfileController extends GetxController {
     phoneController.text = data?.phone ?? '';
     roleController.text = data?.role ?? '';
     addressController.text = data?.address ?? '';
+    originalFullName = data?.fullName ?? '';
+    originalPhone = data?.phone ?? '';
+    originalRole = data?.role ?? '';
+    originalAddress = data?.address ?? '';
   }
 
   //! Update Profile
@@ -243,5 +251,13 @@ class ProfileController extends GetxController {
         ),
       ),
     );
+  }
+
+  //! Check if Profile Data Changed
+  bool isProfileDataChanged() {
+    return fullNameController.text.trim() != originalFullName ||
+        phoneController.text.trim() != originalPhone ||
+        roleController.text.trim() != originalRole ||
+        addressController.text.trim() != originalAddress;
   }
 }
