@@ -89,23 +89,24 @@ class EditProfileView extends GetView<ProfileController> {
                         ),
                         child: Obx(() {
                           return controller.isAvatarLoading.value
-                              ? SizedBox(
-                                  width: 40,
-                                  height: 40,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: AppTheme.primary,
+                              ? Center(
+                                  child: SizedBox(
+                                    width: 40,
+                                    height: 40,
+                                    child: CircularProgressIndicator(
+                                      color: AppTheme.primary,
+                                      strokeWidth: 3,
+                                    ),
                                   ),
                                 )
                               : IconButton(
+                                  onPressed:
+                                      controller.showImagePickerBottomSheet,
                                   icon: const Icon(
-                                    Icons.camera_alt,
-                                    size: 50,
+                                    Icons.camera_alt_outlined,
                                     color: Colors.white,
+                                    size: 45,
                                   ),
-                                  onPressed: () {
-                                    controller.pickAndUploadAvatar();
-                                  },
                                 );
                         }),
                       ),

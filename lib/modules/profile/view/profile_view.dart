@@ -4,6 +4,7 @@ import 'package:flutter_supabase_auth/config/theme/app_theme.dart';
 import 'package:flutter_supabase_auth/modules/auth/controller/auth_controller.dart';
 import 'package:flutter_supabase_auth/modules/profile/model/profile_model.dart';
 import 'package:flutter_supabase_auth/modules/profile/view/edit_profile_view.dart';
+import 'package:flutter_supabase_auth/modules/profile/view/full_screen_preview_view.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import '../controller/profile_controller.dart';
@@ -180,44 +181,45 @@ class ProfileView extends GetView<ProfileController> {
           ),
           Positioned(
             top: 120,
-            child: Container(
-              width: 130,
-              height: 130,
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 194, 193, 193),
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 4),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 10,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: ClipOval(
-                child: data?.avatarUrl != null && data!.avatarUrl.isNotEmpty
-                    ? CachedNetworkImage(
-                        imageUrl: data.avatarUrl,
-                        width: 130,
-                        height: 130,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => const Center(
-                          child: Icon(
-                            Icons.person,
-                            size: 75,
-                            color: Colors.white70,
-                          ),
+            child: GestureDetector(
+              onTap: data?.avatarUrl != null && data!.avatarUrl.isNotEmpty
+                  ? () {
+                      Get.to(
+                        () => FullScreenPreviewView(imageUrl: data.avatarUrl),
+                        transition: Transition.fadeIn,
+                      );
+                    }
+                  : null,
+              child: Container(
+                width: 130,
+                height: 130,
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 194, 193, 193),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 4),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: ClipOval(
+                  child: data?.avatarUrl != null && data!.avatarUrl.isNotEmpty
+                      ? CachedNetworkImage(
+                          imageUrl: data.avatarUrl,
+                          width: 130,
+                          height: 130,
+                          fit: BoxFit.cover,
+                          key: ValueKey(data.avatarUrl),
+                        )
+                      : const Icon(
+                          Icons.person,
+                          size: 75,
+                          color: Colors.white70,
                         ),
-                        errorWidget: (context, url, error) => const Center(
-                          child: Icon(
-                            Icons.person,
-                            size: 75,
-                            color: Colors.redAccent,
-                          ),
-                        ),
-                      )
-                    : const Icon(Icons.person, size: 75, color: Colors.white70),
+                ),
               ),
             ),
           ),

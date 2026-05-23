@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_supabase_auth/config/theme/app_theme.dart';
 import 'package:flutter_supabase_auth/core/service/supabase_service.dart';
 import 'package:flutter_supabase_auth/modules/profile/model/profile_model.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -129,28 +131,40 @@ class ProfileController extends GetxController {
     }
   }
 
-  //! Pick and Upload Avatar
-  Future<void> pickAndUploadAvatar() async {
+  //! Pick Crop and Upload Avatar
+  Future<void> pickAndUploadAvatar(ImageSource source) async {
     try {
       final user = supabase.auth.currentUser;
       if (user == null || user.id.isEmpty) return;
       final picker = ImagePicker();
       final pickedImage = await picker.pickImage(
-        source: ImageSource.gallery,
-        imageQuality: 70,
+        source: source,
+        imageQuality: 80,
       );
       if (pickedImage == null) return;
+      final croppedImage = await ImageCropper().cropImage(
+        sourcePath: pickedImage.path,
+        compressQuality: 80,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Crop Profile Photo',
+            lockAspectRatio: true,
+            aspectRatioPresets: [CropAspectRatioPreset.square],
+          ),
+          IOSUiSettings(
+            title: 'Crop Profile Photo',
+            aspectRatioLockEnabled: true,
+            aspectRatioPresets: [CropAspectRatioPreset.square],
+          ),
+        ],
+      );
+      if (croppedImage == null) return;
       isAvatarLoading.value = true;
-      final filePath = 'avatar_${user.id}.jpg';
-      final file = File(pickedImage.path);
-      await supabase.storage.from('avatars').remove([filePath]);
+      final file = File(croppedImage.path);
+      final filePath = '${user.id}/avatar.jpg';
       await supabase.storage
           .from('avatars')
-          .upload(
-            filePath,
-            file,
-            fileOptions: FileOptions(upsert: true, cacheControl: '0'),
-          );
+          .upload(filePath, file, fileOptions: const FileOptions(upsert: true));
       final imageUrl =
           '${supabase.storage.from('avatars').getPublicUrl(filePath)}?v=${DateTime.now().millisecondsSinceEpoch}';
       await supabase
@@ -179,5 +193,55 @@ class ProfileController extends GetxController {
     } finally {
       isAvatarLoading.value = false;
     }
+  }
+
+  //! Show Image Picker Bottom Sheet
+  void showImagePickerBottomSheet() {
+    Get.bottomSheet(
+      Container(
+        width: double.infinity,
+        height: 250,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppTheme.lightBg,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          children: [
+            Container(
+              width: 45,
+              height: 5,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Choose Profile Photo',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            ListTile(
+              leading: Icon(Icons.camera_alt),
+              title: Text('Take a Photo'),
+              onTap: () {
+                Get.back();
+                pickAndUploadAvatar(ImageSource.camera);
+              },
+            ),
+            SizedBox(height: 10),
+            ListTile(
+              leading: Icon(Icons.photo_library),
+              title: Text('Select from Library'),
+              onTap: () {
+                Get.back();
+                pickAndUploadAvatar(ImageSource.gallery);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
