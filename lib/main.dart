@@ -22,5 +22,8 @@ Future<void> main() async {
 
   //! Controller Initialization
   Get.put(AuthController(), permanent: true);
+
+  //! For delay Splash Screen
+  await Future.delayed(const Duration(milliseconds: 1500));
   runApp(const App());
 }
