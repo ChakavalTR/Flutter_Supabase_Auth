@@ -5,8 +5,8 @@ import 'package:flutter_supabase_auth/modules/auth/controller/auth_controller.da
 import 'package:flutter_supabase_auth/modules/profile/model/profile_model.dart';
 import 'package:flutter_supabase_auth/modules/profile/view/edit_profile_view.dart';
 import 'package:flutter_supabase_auth/modules/profile/view/full_screen_preview_view.dart';
+import 'package:flutter_supabase_auth/widgets/shimmer/profile_shimmer_widget.dart';
 import 'package:get/get.dart';
-import 'package:shimmer/shimmer.dart';
 import '../controller/profile_controller.dart';
 
 class ProfileView extends GetView<ProfileController> {
@@ -26,7 +26,7 @@ class ProfileView extends GetView<ProfileController> {
     return Obx(() {
       final data = controller.profile.value;
       if (controller.isLoading.value) {
-        return _buildProfileShimmer;
+        return const ProfileShimmerWidget();
       }
       return SingleChildScrollView(
         child: Column(
@@ -316,120 +316,6 @@ class ProfileView extends GetView<ProfileController> {
             ],
           ),
         ],
-      ),
-    );
-  }
-
-  //! Build Shimmer Widget
-  Widget get _buildProfileShimmer {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          _buildHeaderShimmer,
-          const SizedBox(height: 10),
-          _shimmerBox(width: 220, height: 26, radius: 8),
-          const SizedBox(height: 10),
-          _shimmerBox(width: 180, height: 18, radius: 8),
-          const SizedBox(height: 18),
-          _shimmerTile,
-          _shimmerTile,
-          _shimmerTile,
-          _shimmerTile,
-        ],
-      ),
-    );
-  }
-
-  //! Build Header Shimmer Widget
-  Widget get _buildHeaderShimmer {
-    return SizedBox(
-      height: 260,
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.topCenter,
-        children: [
-          Shimmer.fromColors(
-            baseColor: Colors.grey.shade300,
-            highlightColor: Colors.grey.shade100,
-            child: Container(
-              width: double.infinity,
-              height: 220,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(60),
-                  bottomRight: Radius.circular(60),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 120,
-            child: Shimmer.fromColors(
-              baseColor: Colors.grey.shade300,
-              highlightColor: Colors.grey.shade100,
-              child: Container(
-                width: 130,
-                height: 130,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 4),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  //! Build Shimmer Tile Widget
-  Widget get _shimmerTile {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 22, vertical: 7),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-      width: double.infinity,
-      height: 70,
-      decoration: BoxDecoration(
-        color: AppTheme.lightBg,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey[300]!, width: 1.5),
-      ),
-      child: Row(
-        children: [
-          _shimmerBox(width: 55, height: 60, radius: 10),
-          const SizedBox(width: 15),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _shimmerBox(width: 90, height: 16, radius: 8),
-              const SizedBox(height: 8),
-              _shimmerBox(width: 140, height: 14, radius: 8),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  //! Build Shimmer Box Widget
-  Widget _shimmerBox({
-    required double width,
-    required double height,
-    required double radius,
-  }) {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey.shade300,
-      highlightColor: Colors.grey.shade100,
-      child: Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(radius),
-        ),
       ),
     );
   }
