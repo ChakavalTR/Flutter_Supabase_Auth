@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_supabase_auth/config/theme/app_theme.dart';
@@ -13,14 +15,25 @@ class FullScreenPreviewView extends StatefulWidget {
 
 class _FullScreenPreviewViewState extends State<FullScreenPreviewView> {
   final TransformationController _controller = TransformationController();
+  TapDownDetails? _doubleTapDetails;
   bool isZoomed = false;
+
+  void _handleDoubleTapDown(TapDownDetails details) {
+    _doubleTapDetails = details;
+  }
+
   void _toggleZoom() {
     if (isZoomed) {
       _controller.value = Matrix4.identity();
-    } else {
-      _controller.value = Matrix4.identity()..scale(2.5);
+      isZoomed = false;
+      return;
     }
-    isZoomed = !isZoomed;
+    final position = _doubleTapDetails?.localPosition ?? Offset.zero;
+    const scale = 2.5;
+    _controller.value = Matrix4.identity()
+      ..translate(-position.dx * (scale - 1), -position.dy * (scale - 1))
+      ..scale(scale);
+    isZoomed = true;
   }
 
   @override
@@ -31,6 +44,7 @@ class _FullScreenPreviewViewState extends State<FullScreenPreviewView> {
         children: [
           Center(
             child: GestureDetector(
+              onDoubleTapDown: _handleDoubleTapDown,
               onDoubleTap: _toggleZoom,
               child: InteractiveViewer(
                 transformationController: _controller,

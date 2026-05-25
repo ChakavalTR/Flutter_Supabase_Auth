@@ -6,6 +6,7 @@ class ProfileModel {
   final String role;
   final String address;
   final String avatarUrl;
+  final String updateAt;
 
   ProfileModel({
     required this.id,
@@ -15,6 +16,7 @@ class ProfileModel {
     required this.role,
     required this.address,
     required this.avatarUrl,
+    required this.updateAt,
   });
 
   factory ProfileModel.fromMap(Map<String, dynamic> map) {
@@ -26,6 +28,7 @@ class ProfileModel {
       role: map['role'] ?? '',
       address: map['address'] ?? '',
       avatarUrl: map['avatar_url'] ?? '',
+      updateAt: map['updated_at'] ?? '',
     );
   }
 }

@@ -16,7 +16,9 @@ class ProfileView extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: SafeArea(top: false, child: _buildBody));
+    return Scaffold(
+      body: SafeArea(top: false, bottom: false, child: _buildBody),
+    );
   }
 
   //! Build Body
@@ -109,6 +111,31 @@ class ProfileView extends GetView<ProfileController> {
                   ? 'Not Provided Yet'
                   : data?.address ?? '',
             ),
+            SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.only(left: 70, right: 70),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 7,
+                ),
+                decoration: BoxDecoration(
+                  color: AppTheme.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Center(
+                  child: Text(
+                    'Last update: ${controller.formatLastUpdated(data?.updateAt)}',
+                    style: TextStyle(
+                      color: AppTheme.darkBg,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 70),
+            Text('Version 1.0.1', style: TextStyle(color: Colors.grey[600])),
           ],
         ),
       );

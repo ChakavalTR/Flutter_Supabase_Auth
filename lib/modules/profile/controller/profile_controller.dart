@@ -208,7 +208,7 @@ class ProfileController extends GetxController {
     Get.bottomSheet(
       Container(
         width: double.infinity,
-        height: 250,
+        height: 220,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppTheme.lightBg,
@@ -253,11 +253,31 @@ class ProfileController extends GetxController {
     );
   }
 
-  //! Check if Profile Data Changed
+  //! Check if Profile Data Changed or Not
   bool isProfileDataChanged() {
     return fullNameController.text.trim() != originalFullName ||
         phoneController.text.trim() != originalPhone ||
         roleController.text.trim() != originalRole ||
         addressController.text.trim() != originalAddress;
+  }
+
+  //! Last Updated Time Status
+  String formatLastUpdated(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Never Updated';
+    }
+    final date = DateTime.tryParse(value);
+    if (date == null) {
+      return 'Not update yet';
+    }
+    final hour = date.hour > 12
+        ? date.hour - 12
+        : date.hour == 0
+        ? 12
+        : date.hour;
+    final ampm = date.hour >= 12 ? 'PM' : 'AM';
+    final minute = date.minute.toString().padLeft(2, '0');
+
+    return '${date.day}/${date.month}/${date.year} • $hour:$minute $ampm';
   }
 }

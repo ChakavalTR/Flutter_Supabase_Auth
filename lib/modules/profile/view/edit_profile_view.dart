@@ -13,10 +13,7 @@ class EditProfileView extends GetView<ProfileController> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        appBar: _buildAppBar(),
-        body: SafeArea(bottom: false, child: _buildBody),
-      ),
+      child: Scaffold(appBar: _buildAppBar(), body: _buildBody),
     );
   }
 
@@ -120,7 +117,6 @@ class EditProfileView extends GetView<ProfileController> {
                   controller: controller.fullNameController,
                 ),
                 const SizedBox(height: 16),
-
                 _buildTextAlign('Email'),
                 const SizedBox(height: 8),
                 _buildTextField(
@@ -129,7 +125,6 @@ class EditProfileView extends GetView<ProfileController> {
                   enabled: false,
                 ),
                 const SizedBox(height: 16),
-
                 _buildTextAlign('Phone'),
                 const SizedBox(height: 8),
                 _buildTextField(
@@ -143,9 +138,7 @@ class EditProfileView extends GetView<ProfileController> {
                     return null;
                   },
                 ),
-
                 const SizedBox(height: 16),
-
                 _buildTextAlign('Role'),
                 const SizedBox(height: 8),
                 _buildTextField(
@@ -159,9 +152,7 @@ class EditProfileView extends GetView<ProfileController> {
                     return null;
                   },
                 ),
-
                 const SizedBox(height: 16),
-
                 _buildTextAlign('Address'),
                 const SizedBox(height: 8),
                 _buildTextField(
